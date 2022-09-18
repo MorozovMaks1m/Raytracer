@@ -7,5 +7,6 @@
 #include "constants.h"
 
 Color RayColor(const Ray& r, const Hittable& world);
+void WriteColor(std::ostream &out, Color pixel_color, int samples_per_pixel);
 
 #endif // COLOR_H

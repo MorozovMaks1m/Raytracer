@@ -7,15 +7,18 @@
 #include "utils/hittable_list.h"
 #include "utils/sphere.h"
 #include "utils/color.h"
+#include "utils/camera.h"
 
 int main()
 {
-    CreateFileHeader(std::cout);
+    constexpr double aspect_ratio = 16.0 / 9.0;
+    constexpr int image_width = 1920;
+    constexpr int image_height = static_cast<int>(image_width / aspect_ratio);
+    constexpr int samples_per_pixel = 100;
+    CreateFileHeader(std::cout, image_width, image_height);
 
-    const Point3 origin = Point3(0, 0, 0);
-    const Vector3 horizontal = Vector3(viewport_width, 0, 0);
-    const Vector3 vertical = Vector3(0, viewport_height, 0);
-    const Point3 lower_left_corner = origin - horizontal / 2 - vertical / 2 - Point3(0, 0, focal_length);
+
+    Camera cam(aspect_ratio);
 
     HittableList world;
     world.add(std::make_shared<Sphere>(Point3(0, 0, -1), 0.5));
@@ -24,11 +27,15 @@ int main()
     for (int i = image_height-1; i >= 0; --i) {
         std::cerr << "\rScanlines remaining: " << i << ' ' << std::flush;
         for (int j = 0; j < image_width; ++j) {
-            auto u = double(j) / (image_width-1);
-            auto v = double(i) / (image_height-1);
-            Ray ray(origin, lower_left_corner + u * horizontal + v * vertical - origin);
-            Color pixel_color = RayColor(ray, world);
-            WriteColor(std::cout, pixel_color);
+            Color pixel_color(0, 0, 0);
+            for (int s = 0; s < samples_per_pixel; ++s)
+            {
+                double u = (j + RandomDouble()) / (image_width - 1);
+                double v = (i + RandomDouble()) / (image_height - 1);
+                Ray ray = cam.GetRay(u, v);
+                pixel_color += RayColor(ray, world);
+            }
+            WriteColor(std::cout, pixel_color, samples_per_pixel);
         }
     }
     std::cerr << std::endl << "Done." << std::endl;
