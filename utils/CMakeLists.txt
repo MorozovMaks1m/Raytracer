@@ -1,1 +1,1 @@
-add_library(Utils color_utils.cpp ray.cpp)
+add_library(Utils color_utils.cpp ray.cpp sphere.cpp hittable_list.cpp color.cpp)

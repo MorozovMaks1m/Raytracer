@@ -30,7 +30,6 @@ private:
     Vector3 direction_;
 };
 
-Color RayColor(const Ray& r);
 double HitSphere(const Point3& center, double radius, const Ray& r);
 
 #endif // RAY_H
