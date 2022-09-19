@@ -4,6 +4,8 @@
 #include <cmath>
 #include <iostream>
 
+#include "constants.h"
+
 class Vector3
 {
 public:
@@ -76,6 +78,23 @@ public:
         return basis[0]*basis[0] + basis[1]*basis[1] + basis[2]*basis[2];
     }
 
+    inline static Vector3 random()
+    {
+        return Vector3(RandomDouble(), RandomDouble(), RandomDouble());
+    }
+
+    inline static Vector3 random(double min, double max)
+    {
+        return Vector3(RandomDouble(min,max), RandomDouble(min,max), RandomDouble(min,max));
+    }
+
+    bool near_zero() const
+    {
+        // Return true if the vector is close to zero in all dimensions.
+        const auto s = 1e-8;
+        return (fabs(basis[0]) < s) && (fabs(basis[1]) < s) && (fabs(basis[2]) < s);
+    }
+
     friend std::ostream& operator<<(std::ostream &out, const Vector3 &v);
     friend Vector3 operator+(const Vector3 &u, const Vector3 &v);
     friend Vector3 operator-(const Vector3 &u, const Vector3 &v);
@@ -138,6 +157,18 @@ inline Vector3 cross(const Vector3 &u, const Vector3 &v)
 inline Vector3 UnitVector(Vector3 v)
 {
     return v / v.length();
+}
+
+Vector3 RandomInUnitSphere();
+
+inline Vector3 RandomUnitVector()
+{
+    return UnitVector(RandomInUnitSphere());
+}
+
+inline Vector3 reflect(const Vector3& v, const Vector3& n)
+{
+    return v - 2*dot(v,n)*n;
 }
 
 // Type aliases for Vector3

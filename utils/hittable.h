@@ -1,11 +1,16 @@
 #ifndef HITTABLE_H
 #define HITTABLE_H
 
-#include "ray.h"
+#include <memory>
 
-struct hit_record {
+#include "ray.h"
+#include "material.h"
+
+struct hit_record
+{
     Point3 hit_point;
     Vector3 normal;
+    std::shared_ptr<Material> mat_ptr;
     double t;
     bool front_face;
 
@@ -16,9 +21,10 @@ struct hit_record {
     }
 };
 
-class Hittable {
-    public:
-        virtual bool hit(const Ray& r, double t_min, double t_max, hit_record& rec) const = 0;
+class Hittable
+{
+public:
+    virtual bool hit(const Ray& r, double t_min, double t_max, hit_record& rec) const = 0;
 };
 
 #endif // HITTABLE_H
