@@ -80,7 +80,7 @@ public:
 
     inline static Vector3 random()
     {
-        return Vector3(RandomDouble(), RandomDouble(), RandomDouble());
+        return Vector3(RandomDouble(0, 1), RandomDouble(0, 1), RandomDouble(0, 1));
     }
 
     inline static Vector3 random(double min, double max)
@@ -170,6 +170,10 @@ inline Vector3 reflect(const Vector3& v, const Vector3& n)
 {
     return v - 2*dot(v,n)*n;
 }
+
+Vector3 refract(const Vector3& uv, const Vector3& n, double etai_over_etat);
+
+Vector3 RandomInUnitDisk();
 
 // Type aliases for Vector3
 using Point3 = Vector3;   // 3D point
