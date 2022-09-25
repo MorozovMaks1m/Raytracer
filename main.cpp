@@ -12,34 +12,25 @@
 #include "utils/metal.h"
 #include "utils/dielectric.h"
 
+#include "scene1.h"
+
 int main()
 {
-    constexpr double aspect_ratio = 16.0 / 9.0;
-    constexpr int image_width = 1920;
+    constexpr double aspect_ratio = 3.0 / 2.0;
+    constexpr int image_width = 1200;
     constexpr int image_height = static_cast<int>(image_width / aspect_ratio);
-    constexpr int samples_per_pixel = 100;
+    constexpr int samples_per_pixel = 500;
     constexpr int max_depth = 50;
     CreateFileHeader(std::cout, image_width, image_height);
 
-    HittableList world;
-    auto material_ground = std::make_shared<lambertian>(Color(0.8, 0.8, 0.0));
-    auto material_center = std::make_shared<lambertian>(Color(0.1, 0.2, 0.5));
-    auto material_left   = std::make_shared<dielectric>(1.5);
-    auto material_right  = std::make_shared<metal>(Color(0.8, 0.6, 0.2), 0.0);
+    HittableList world = RandomScene();
 
-    world.add(std::make_shared<Sphere>(Point3( 0.0, -100.5, -1.0), 100.0, material_ground));
-    world.add(std::make_shared<Sphere>(Point3( 0.0,    0.0, -1.0),   0.5, material_center));
-    world.add(std::make_shared<Sphere>(Point3(-1.0,    0.0, -1.0),   0.5, material_left));
-    world.add(std::make_shared<Sphere>(Point3(-1.0,    0.0, -1.0),  -0.45, material_left));
-    world.add(std::make_shared<Sphere>(Point3( 1.0,    0.0, -1.0),   0.5, material_right));
-
-
-
-    Point3 lookfrom(-3,2,2);
-    Point3 lookat(0,0,-1);
+    Point3 lookfrom(13,2,2);
+    Point3 lookat(0,0,0);
     Vector3 view_up(0,1,0);
-    double dist_to_focus = (lookfrom - lookat).length();
-    double aperture = 0.2;
+    double dist_to_focus = 10.0;
+    double aperture = 0.1;
+
     Camera cam(lookfrom, lookat, view_up, 40, aspect_ratio, aperture, dist_to_focus);
 
     for (int i = image_height-1; i >= 0; --i) {

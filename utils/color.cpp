@@ -13,7 +13,7 @@ Color RayColor(const Ray& ray, const Hittable& world, int depth)
         Ray scattered;
         Color attenuation;
         if (record.mat_ptr->scatter(ray, record, attenuation, scattered))
-            return attenuation * RayColor(scattered, world, depth-1);
+            return attenuation * RayColor(scattered, world, depth - 1);
         return Color(0,0,0);
     }
     Vector3 unit_direction = UnitVector(ray.direction());

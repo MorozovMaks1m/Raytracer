@@ -37,7 +37,6 @@ public:
         Vector3 rd = lens_radius * RandomInUnitDisk();
         Vector3 offset = u * rd.x() + v * rd.y();
 
-
         return Ray(origin + offset, lower_left_corner + s * horizontal + t * vertical - origin - offset);
     }
 
