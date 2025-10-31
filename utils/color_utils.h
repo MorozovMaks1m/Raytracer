@@ -2,7 +2,6 @@
 #define COLOR_UTILS_H
 
 #include <iostream>
-#include "vector3.h"
 
 const int max_color_format = 255;
 const double max_color = 255.999;

@@ -3,27 +3,18 @@
 
 #include "vector3.h"
 
-class Ray
-{
+class Ray {
 public:
-    Ray() {}
-    
+    Ray() = default;
+
     Ray(const Point3 &origin, const Vector3 &direction)
-        : origin_(origin), direction_(direction)
-    {}
+        : origin_(origin), direction_(direction) {}
 
-    Point3 origin() const
-    {
-        return origin_;
-    }
+    [[nodiscard]] auto Origin() const -> Point3 { return origin_; }
 
-    Point3 direction() const
-    {
-        return direction_;
-    }
+    [[nodiscard]] auto Direction() const -> Point3 { return direction_; }
 
-    Point3 at(double t) const
-    {
+    [[nodiscard]] auto At(double t) const -> Point3 {
         return origin_ + t * direction_;
     }
 
@@ -32,6 +23,6 @@ private:
     Vector3 direction_;
 };
 
-double HitSphere(const Point3& center, double radius, const Ray& r);
+auto HitSphere(Point3 &center, double radius, const Ray &r) -> double;
 
 #endif // RAY_H

@@ -4,49 +4,42 @@
 #include "constants.h"
 #include "ray.h"
 
-class Camera
-{
+class Camera {
 public:
-    Camera(Point3 lookfrom,
-           Point3 lookat,
-           Vector3 view_up,
+    Camera(Point3 lookfrom, Point3 lookat, Vector3 view_up,
            double vfov, // vertical field-of-view in degrees
-           double aspect_ratio,
-           double aperture,
-           double focus_dist)
-    {
-        double theta = degrees_to_radians(vfov);
+           double aspect_ratio, double aperture, double focus_dist)
+        : origin_(lookfrom), lensRadius_(aperture / 2) {
+        double theta = DegreesToRadians(vfov);
         double h = tan(theta / 2);
         double viewport_height = 2.0 * h;
         double viewport_width = aspect_ratio * viewport_height;
 
-        w = UnitVector(lookfrom - lookat);
-        u = UnitVector(cross(view_up, w));
-        v = cross(w, u);
+        w_ = UnitVector(lookfrom - lookat);
+        u_ = UnitVector(Cross(view_up, w_));
+        v_ = Cross(w_, u_);
 
-        origin = lookfrom;
-        horizontal = focus_dist * viewport_width * u;
-        vertical = focus_dist * viewport_height * v;
-        lower_left_corner = origin - horizontal / 2 - vertical / 2 - focus_dist * w;
-
-        lens_radius = aperture / 2;
+        horizontalSize_ = focus_dist * viewport_width * u_;
+        verticalSize_ = focus_dist * viewport_height * v_;
+        lowerLeftCorner_ =
+            origin_ - horizontalSize_ / 2 - verticalSize_ / 2 - focus_dist * w_;
     }
 
-    Ray GetRay(double s, double t) const
-    {
-        Vector3 rd = lens_radius * RandomInUnitDisk();
-        Vector3 offset = u * rd.x() + v * rd.y();
+    [[nodiscard]] auto GetRay(double s, double t) const -> Ray {
+        Vector3 rd = lensRadius_ * RandomInUnitDisk();
+        Vector3 offset = u_ * rd.X() + v_ * rd.Y();
 
-        return Ray(origin + offset, lower_left_corner + s * horizontal + t * vertical - origin - offset);
+        return Ray(origin_ + offset, lowerLeftCorner_ + s * horizontalSize_ +
+                                         t * verticalSize_ - origin_ - offset);
     }
 
 private:
-    Point3 origin;
-    Point3 lower_left_corner;
-    Vector3 horizontal;
-    Vector3 vertical;
-    Vector3 u, v, w;
-    double lens_radius;
+    Point3 origin_;
+    Point3 lowerLeftCorner_;
+    Vector3 horizontalSize_;
+    Vector3 verticalSize_;
+    Vector3 u_, v_, w_;
+    double lensRadius_;
 };
 
 #endif // CAMERA_H

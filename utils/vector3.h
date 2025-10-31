@@ -6,177 +6,140 @@
 
 #include "constants.h"
 
-class Vector3
-{
+class Vector3 {
 public:
-    Vector3() : basis{0,0,0} {}
-    Vector3(const double e0, const double e1, const double e2) : basis{e0, e1, e2} {}
+    Vector3() : basis_{0, 0, 0} {}
+    Vector3(const double e0, const double e1, const double e2)
+        : basis_{e0, e1, e2} {}
 
-    double x() const 
-    {
-        return basis[0];
+    [[nodiscard]] auto X() const -> double { return basis_[0]; }
+
+    [[nodiscard]] auto Y() const -> double { return basis_[1]; }
+
+    [[nodiscard]] auto Z() const -> double { return basis_[2]; }
+
+    auto operator-() const -> Vector3 {
+        return Vector3(-basis_[0], -basis_[1], -basis_[2]);
     }
 
-    double y() const 
-    {
-        return basis[1];
-    }
+    auto operator[](const int i) const -> double { return basis_[i]; }
 
-    double z() const 
-    {
-        return basis[2];
-    }
+    auto operator[](const int i) -> double & { return basis_[i]; }
 
-    Vector3 operator-() const 
-    {
-        return Vector3(-basis[0], -basis[1], -basis[2]);
-    }
-
-    double operator[](const int i) const
-    {
-        return basis[i];
-    }
-
-    double& operator[](const int i)
-    {
-        return basis[i];
-    }
-
-    Vector3& operator+=(const Vector3 &v)
-    {
-        basis[0] += v.basis[0];
-        basis[1] += v.basis[1];
-        basis[2] += v.basis[2];
+    auto operator+=(const Vector3 &v) -> Vector3 & {
+        basis_[0] += v.basis_[0];
+        basis_[1] += v.basis_[1];
+        basis_[2] += v.basis_[2];
         return *this;
     }
 
-    Vector3& operator*=(const double t)
-    {
-        basis[0] *= t;
-        basis[1] *= t;
-        basis[2] *= t;
+    auto operator*=(const double t) -> Vector3 & {
+        basis_[0] *= t;
+        basis_[1] *= t;
+        basis_[2] *= t;
         return *this;
     }
 
-    Vector3& operator-=(const Vector3 &v)
-    {
-        return *this += (-v);
+    auto operator-=(const Vector3 &v) -> Vector3 & { return *this += (-v); }
+
+    auto operator/=(const double t) -> Vector3 & { return *this *= 1 / t; }
+
+    [[nodiscard]] auto Length() const -> double {
+        return std::sqrt(LengthSquared());
     }
 
-    Vector3& operator/=(const double t)
-    {
-        return *this *= 1/t;
+    [[nodiscard]] auto LengthSquared() const -> double {
+        return (basis_[0] * basis_[0]) + (basis_[1] * basis_[1]) +
+               (basis_[2] * basis_[2]);
     }
 
-    double length() const
-    {
-        return std::sqrt(length_squared());
+    static auto Random() -> Vector3 {
+        return Vector3(RandomDouble(0, 1), RandomDouble(0, 1),
+                       RandomDouble(0, 1));
     }
 
-    double length_squared() const
-    {
-        return basis[0]*basis[0] + basis[1]*basis[1] + basis[2]*basis[2];
+    static auto Random(double min, double max) -> Vector3 {
+        return Vector3(RandomDouble(min, max), RandomDouble(min, max),
+                       RandomDouble(min, max));
     }
 
-    inline static Vector3 random()
-    {
-        return Vector3(RandomDouble(0, 1), RandomDouble(0, 1), RandomDouble(0, 1));
-    }
-
-    inline static Vector3 random(double min, double max)
-    {
-        return Vector3(RandomDouble(min,max), RandomDouble(min,max), RandomDouble(min,max));
-    }
-
-    bool near_zero() const
-    {
+    [[nodiscard]] auto NearZero() const -> bool {
         // Return true if the vector is close to zero in all dimensions.
         const auto s = 1e-8;
-        return (fabs(basis[0]) < s) && (fabs(basis[1]) < s) && (fabs(basis[2]) < s);
+        return (fabs(basis_[0]) < s) && (fabs(basis_[1]) < s) &&
+               (fabs(basis_[2]) < s);
     }
 
-    friend std::ostream& operator<<(std::ostream &out, const Vector3 &v);
-    friend Vector3 operator+(const Vector3 &u, const Vector3 &v);
-    friend Vector3 operator-(const Vector3 &u, const Vector3 &v);
-    friend Vector3 operator*(const Vector3 &u, const Vector3 &v);
-    friend Vector3 operator*(double t, const Vector3 &v);
-    friend double dot(const Vector3 &u, const Vector3 &v);
-    friend Vector3 cross(const Vector3 &u, const Vector3 &v);
+    friend auto operator<<(std::ostream &out, const Vector3 &v)
+        -> std::ostream &;
+    friend auto operator+(const Vector3 &u, const Vector3 &v) -> Vector3;
+    friend auto operator-(const Vector3 &u, const Vector3 &v) -> Vector3;
+    friend auto operator*(const Vector3 &u, const Vector3 &v) -> Vector3;
+    friend auto operator*(double t, const Vector3 &v) -> Vector3;
+    friend auto Dot(const Vector3 &u, const Vector3 &v) -> double;
+    friend auto Cross(const Vector3 &u, const Vector3 &v) -> Vector3;
 
 private:
-    double basis[3];
+    double basis_[3];
 };
 
-inline std::ostream& operator<<(std::ostream &out, const Vector3 &v)
-{
-    return out << v.basis[0] << ' ' << v.basis[1] << ' ' << v.basis[2];
+inline auto operator<<(std::ostream &out, const Vector3 &v) -> std::ostream & {
+    return out << v.basis_[0] << ' ' << v.basis_[1] << ' ' << v.basis_[2];
 }
 
-inline Vector3 operator+(const Vector3 &u, const Vector3 &v)
-{
-    return Vector3(u.basis[0] + v.basis[0], u.basis[1] + v.basis[1], u.basis[2] + v.basis[2]);
+inline auto operator+(const Vector3 &u, const Vector3 &v) -> Vector3 {
+    return Vector3(u.basis_[0] + v.basis_[0], u.basis_[1] + v.basis_[1],
+                   u.basis_[2] + v.basis_[2]);
 }
 
-inline Vector3 operator-(const Vector3 &u, const Vector3 &v)
-{
-    return Vector3(u.basis[0] - v.basis[0], u.basis[1] - v.basis[1], u.basis[2] - v.basis[2]);
+inline auto operator-(const Vector3 &u, const Vector3 &v) -> Vector3 {
+    return Vector3(u.basis_[0] - v.basis_[0], u.basis_[1] - v.basis_[1],
+                   u.basis_[2] - v.basis_[2]);
 }
 
-inline Vector3 operator*(const Vector3 &u, const Vector3 &v)
-{
-    return Vector3(u.basis[0] * v.basis[0], u.basis[1] * v.basis[1], u.basis[2] * v.basis[2]);
+inline auto operator*(const Vector3 &u, const Vector3 &v) -> Vector3 {
+    return Vector3(u.basis_[0] * v.basis_[0], u.basis_[1] * v.basis_[1],
+                   u.basis_[2] * v.basis_[2]);
 }
 
-inline Vector3 operator*(double t, const Vector3 &v)
-{
-    return Vector3(t * v.basis[0], t * v.basis[1], t * v.basis[2]);
+inline auto operator*(double t, const Vector3 &v) -> Vector3 {
+    return Vector3(t * v.basis_[0], t * v.basis_[1], t * v.basis_[2]);
 }
 
-inline Vector3 operator*(const Vector3 &v, double t)
-{
-    return t * v;
+inline auto operator*(const Vector3 &v, double t) -> Vector3 { return t * v; }
+
+inline auto operator/(Vector3 v, double t) -> Vector3 { return (1 / t) * v; }
+
+inline auto Dot(const Vector3 /*unused*/ &u, const Vector3 &v) -> double {
+    return (u.basis_[0] * v.basis_[0]) + (u.basis_[1] * v.basis_[1]) +
+           (u.basis_[2] * v.basis_[2]);
 }
 
-inline Vector3 operator/(Vector3 v, double t)
-{
-    return (1 / t) * v;
+inline auto Cross(const Vector3 /*unused*/ &u, const Vector3 &v) -> Vector3 {
+    return Vector3((u.basis_[1] * v.basis_[2]) - (u.basis_[2] * v.basis_[1]),
+                   (u.basis_[2] * v.basis_[0]) - (u.basis_[0] * v.basis_[2]),
+                   (u.basis_[0] * v.basis_[1]) - (u.basis_[1] * v.basis_[0]));
 }
 
-inline double dot(const Vector3 &u, const Vector3 &v)
-{
-    return u.basis[0] * v.basis[0] + u.basis[1] * v.basis[1] + u.basis[2] * v.basis[2];
-}
+inline auto UnitVector(Vector3 v) -> Vector3 { return v / v.Length(); }
 
-inline Vector3 cross(const Vector3 &u, const Vector3 &v)
-{
-    return Vector3(u.basis[1] * v.basis[2] - u.basis[2] * v.basis[1],
-                   u.basis[2] * v.basis[0] - u.basis[0] * v.basis[2],
-                   u.basis[0] * v.basis[1] - u.basis[1] * v.basis[0]);
-}
+auto RandomInUnitSphere() -> Vector3;
 
-inline Vector3 UnitVector(Vector3 v)
-{
-    return v / v.length();
-}
-
-Vector3 RandomInUnitSphere();
-
-inline Vector3 RandomUnitVector()
-{
+inline auto RandomUnitVector() -> Vector3 {
     return UnitVector(RandomInUnitSphere());
 }
 
-inline Vector3 reflect(const Vector3& v, const Vector3& n)
-{
-    return v - 2*dot(v,n)*n;
+inline auto Reflect(const Vector3 /*unused*/ &v, const Vector3 &n) -> Vector3 {
+    return v - 2 * Dot(v, n) * n;
 }
 
-Vector3 refract(const Vector3& uv, const Vector3& n, double etai_over_etat);
+auto Refract(const Vector3 &uv, const Vector3 &n, double etai_over_etat)
+    -> Vector3;
 
-Vector3 RandomInUnitDisk();
+auto RandomInUnitDisk() -> Vector3;
 
 // Type aliases for Vector3
-using Point3 = Vector3;   // 3D point
-using Color = Vector3;    // RGB color
+using Point3 = Vector3; // 3D point
+using Color = Vector3;  // RGB color
 
 #endif // VECTOR3_H
