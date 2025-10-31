@@ -12,15 +12,15 @@ public:
         : origin_(lookfrom), lensRadius_(aperture / 2) {
         double theta = DegreesToRadians(vfov);
         double h = tan(theta / 2);
-        double viewport_height = 2.0 * h;
-        double viewport_width = aspect_ratio * viewport_height;
+        double viewportHeight = 2.0 * h;
+        double viewportWidth = aspect_ratio * viewportHeight;
 
         w_ = UnitVector(lookfrom - lookat);
         u_ = UnitVector(Cross(view_up, w_));
         v_ = Cross(w_, u_);
 
-        horizontalSize_ = focus_dist * viewport_width * u_;
-        verticalSize_ = focus_dist * viewport_height * v_;
+        horizontalSize_ = focus_dist * viewportWidth * u_;
+        verticalSize_ = focus_dist * viewportHeight * v_;
         lowerLeftCorner_ =
             origin_ - horizontalSize_ / 2 - verticalSize_ / 2 - focus_dist * w_;
     }

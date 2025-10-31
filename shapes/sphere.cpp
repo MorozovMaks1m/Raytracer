@@ -1,16 +1,16 @@
-#include "utils/vector3.h"
 #include "sphere.h"
+#include "utils/vector3.h"
 
 Sphere::Sphere(Point3 cen, double r, std::shared_ptr<Material> m)
-        : center_(cen), radius_(r), matPtr_(std::move(std::move(m))) {}
+    : center_(cen), radius_(r), matPtr_(std::move(std::move(m))) {}
 
 auto Sphere::Hit(const Ray &ray, double t_min, double t_max,
                  HitRecord &record) const -> bool {
     Vector3 oc = ray.Origin() - center_;
     double a = ray.Direction().LengthSquared();
-    double half_b = Dot(oc, ray.Direction());
+    double halfB = Dot(oc, ray.Direction());
     double c = oc.LengthSquared() - (radius_ * radius_);
-    double discriminant = (half_b * half_b) - (a * c);
+    double discriminant = (halfB * halfB) - (a * c);
     if (discriminant < 0) {
         return false;
     }
@@ -18,9 +18,9 @@ auto Sphere::Hit(const Ray &ray, double t_min, double t_max,
     double sqrtd = sqrt(discriminant);
 
     // Find the nearest root that lies in the acceptable range.
-    double root = (-half_b - sqrtd) / a;
+    double root = (-halfB - sqrtd) / a;
     if (root < t_min || root > t_max) {
-        root = (-half_b + sqrtd) / a;
+        root = (-halfB + sqrtd) / a;
         if (root < t_min || root > t_max) {
             return false;
         }
@@ -28,8 +28,8 @@ auto Sphere::Hit(const Ray &ray, double t_min, double t_max,
 
     record.t_ = root;
     record.hitPoint_ = ray.At(record.t_);
-    Vector3 outward_normal = (record.hitPoint_ - center_) / radius_;
-    record.SetFaceNormal(ray, outward_normal);
+    Vector3 outwardNormal = (record.hitPoint_ - center_) / radius_;
+    record.SetFaceNormal(ray, outwardNormal);
     record.matPtr_ = matPtr_;
 
     return true;

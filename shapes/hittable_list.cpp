@@ -1,20 +1,19 @@
-#include "utils/ray.h"
 #include "hittable_list.h"
-
+#include "utils/ray.h"
 
 auto HittableList::Hit(const Ray &ray, double t_min, double t_max,
                        HitRecord &record) const -> bool {
-    HitRecord temp_rec;
-    bool hit_anything = false;
-    double closest_so_far = t_max;
+    HitRecord tempRec;
+    bool hitAnything = false;
+    double closestSoFar = t_max;
 
     for (const auto &object : objects_) {
-        if (object->Hit(ray, t_min, closest_so_far, temp_rec)) {
-            hit_anything = true;
-            closest_so_far = temp_rec.t_;
-            record = temp_rec;
+        if (object->Hit(ray, t_min, closestSoFar, tempRec)) {
+            hitAnything = true;
+            closestSoFar = tempRec.t_;
+            record = tempRec;
         }
     }
 
-    return hit_anything;
+    return hitAnything;
 }

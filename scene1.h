@@ -1,51 +1,49 @@
-#include "utils/constants.h"
-#include "shapes/hittable_list.h"
-#include "shapes/sphere.h"
+#include "materials/dielectric.h"
 #include "materials/lambertian.h"
 #include "materials/metal.h"
-#include "materials/dielectric.h"
+#include "shapes/hittable_list.h"
+#include "shapes/sphere.h"
+#include "utils/constants.h"
 
 #include <memory>
 
 #ifndef SCENE1_H
 #define SCENE1_H
 
-auto RandomScene() -> HittableList
-{
+auto RandomScene() -> HittableList {
     HittableList world;
 
-    auto ground_material = std::make_shared<Lambertian>(Color(0.5, 0.5, 0.5));
-    world.Add(std::make_shared<Sphere>(Point3(0,-1000,0), 1000, ground_material));
+    auto groundMaterial = std::make_shared<Lambertian>(Color(0.5, 0.5, 0.5));
+    world.Add(
+        std::make_shared<Sphere>(Point3(0, -1000, 0), 1000, groundMaterial));
 
     for (int a = -11; a < 11; a++) {
         for (int b = -11; b < 11; b++) {
-            auto choose_mat = RandomDouble(0, 1);
-            Point3 center(a + (0.9 * RandomDouble(0, 1)), 0.2, b + (0.9 * RandomDouble(0, 1)));
+            auto chooseMat = RandomDouble(0, 1);
+            Point3 center(a + (0.9 * RandomDouble(0, 1)), 0.2,
+                          b + (0.9 * RandomDouble(0, 1)));
 
-            if ((center - Point3(4, 0.2, 0)).Length() > 0.9)
-            {
-                std::shared_ptr<Material> sphere_material;
+            if ((center - Point3(4, 0.2, 0)).Length() > 0.9) {
+                std::shared_ptr<Material> sphereMaterial;
 
-                if (choose_mat < 0.8)
-                {
+                if (chooseMat < 0.8) {
                     // diffuse
                     auto albedo = Color::Random() * Color::Random();
-                    sphere_material = std::make_shared<Lambertian>(albedo);
-                    world.Add(std::make_shared<Sphere>(center, 0.2, sphere_material));
-                }
-                else if (choose_mat < 0.95)
-                {
+                    sphereMaterial = std::make_shared<Lambertian>(albedo);
+                    world.Add(
+                        std::make_shared<Sphere>(center, 0.2, sphereMaterial));
+                } else if (chooseMat < 0.95) {
                     // metal
                     auto albedo = Color::Random(0.5, 1);
                     auto fuzz = RandomDouble(0, 0.5);
-                    sphere_material = std::make_shared<Metal>(albedo, fuzz);
-                    world.Add(std::make_shared<Sphere>(center, 0.2, sphere_material));
-                }
-                else
-                {
+                    sphereMaterial = std::make_shared<Metal>(albedo, fuzz);
+                    world.Add(
+                        std::make_shared<Sphere>(center, 0.2, sphereMaterial));
+                } else {
                     // glass
-                    sphere_material = std::make_shared<Dielectric>(1.5);
-                    world.Add(std::make_shared<Sphere>(center, 0.2, sphere_material));
+                    sphereMaterial = std::make_shared<Dielectric>(1.5);
+                    world.Add(
+                        std::make_shared<Sphere>(center, 0.2, sphereMaterial));
                 }
             }
         }

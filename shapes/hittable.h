@@ -1,8 +1,8 @@
 #ifndef HITTABLE_H
 #define HITTABLE_H
 
-#include "utils/vector3.h"
 #include "utils/ray.h"
+#include "utils/vector3.h"
 class Material;
 
 struct HitRecord {

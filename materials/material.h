@@ -1,8 +1,8 @@
 #ifndef MATERIAL_H
 #define MATERIAL_H
 
-#include "utils/vector3.h"
 #include "utils/ray.h"
+#include "utils/vector3.h"
 
 struct HitRecord;
 

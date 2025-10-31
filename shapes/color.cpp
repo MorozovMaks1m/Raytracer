@@ -1,8 +1,8 @@
 #include "color.h"
 
 #include "hittable.h"
-#include "utils/ray.h"
 #include "materials/material.h"
+#include "utils/ray.h"
 
 auto RayColor(const Ray &ray, const Hittable &world, int depth) -> Color {
     HitRecord record;

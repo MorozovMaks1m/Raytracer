@@ -10,10 +10,10 @@ auto RandomInUnitSphere() -> Vector3 {
 
 auto Refract(const Vector3 &uv, const Vector3 &n, double etai_over_etat)
     -> Vector3 {
-    auto cos_theta = fmin(Dot(-uv, n), 1.0);
-    Vector3 r_out_perp = etai_over_etat * (uv + cos_theta * n);
-    Vector3 r_out_parallel = -sqrt(fabs(1.0 - r_out_perp.LengthSquared())) * n;
-    return r_out_perp + r_out_parallel;
+    auto cosTheta = fmin(Dot(-uv, n), 1.0);
+    Vector3 rOutPerp = etai_over_etat * (uv + cosTheta * n);
+    Vector3 rOutParallel = -sqrt(fabs(1.0 - rOutPerp.LengthSquared())) * n;
+    return rOutPerp + rOutParallel;
 }
 
 auto RandomInUnitDisk() -> Vector3 {
